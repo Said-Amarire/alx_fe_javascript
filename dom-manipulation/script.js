@@ -250,3 +250,60 @@ async function syncQuotes() {
     console.error("⚠️ Error posting quotes to server:", postError);
   }
 }
+
+// -------------------- SYNC QUOTES FUNCTION --------------------
+async function syncQuotes() {
+  console.log("🔁 Syncing quotes with server...");
+
+  try {
+    // Fetch quotes from server (simulation)
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const serverQuotes = await response.json();
+
+    // Merge server data with local data (simulation)
+    quotes.push({
+      text: serverQuotes[0]?.title || "Server synced quote",
+      category: "Server"
+    });
+
+    // Save merged data to localStorage
+    localStorage.setItem("quotes", JSON.stringify(quotes));
+
+    console.log("✅ Quotes synced successfully with server!");
+  } catch (error) {
+    console.error("⚠️ Error syncing quotes:", error);
+  }
+
+  // Now also post local quotes to server
+  try {
+    const postResponse = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quotes)
+    });
+
+    if (postResponse.ok) {
+      console.log("✅ Quotes successfully posted to server!");
+
+      // ✅ Display message in the UI
+      let messageDiv = document.getElementById("syncMessage");
+      if (!messageDiv) {
+        messageDiv = document.createElement("div");
+        messageDiv.id = "syncMessage";
+        messageDiv.style.backgroundColor = "#d4edda";
+        messageDiv.style.color = "#155724";
+        messageDiv.style.padding = "10px";
+        messageDiv.style.marginTop = "10px";
+        messageDiv.style.borderRadius = "8px";
+        document.body.appendChild(messageDiv);
+      }
+      messageDiv.textContent = "Quotes synced with server!"; 
+    } else {
+      console.error("❌ Failed to post quotes to server:", postResponse.status);
+    }
+  } catch (postError) {
+    console.error("⚠️ Error posting quotes to server:", postError);
+  }
+}
