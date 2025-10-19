@@ -10,8 +10,8 @@ const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
 const categoryFilter = document.getElementById("categoryFilter");
 
-// -------------------- DISPLAY RANDOM QUOTE --------------------
-function displayRandomQuote() {
+// -------------------- SHOW RANDOM QUOTE --------------------
+function showRandomQuote() {
   let filteredQuotes = quotes;
   const selectedCategory = localStorage.getItem("selectedCategory") || "all";
   if (selectedCategory !== "all") {
@@ -43,7 +43,7 @@ function addQuote() {
   quotes.push(newQuote);
   saveQuotes();
   populateCategories();
-  displayRandomQuote();
+  showRandomQuote();
 
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
@@ -73,7 +73,7 @@ function populateCategories() {
 function filterQuotes() {
   const selectedCategory = categoryFilter.value;
   localStorage.setItem("selectedCategory", selectedCategory);
-  displayRandomQuote();
+  showRandomQuote();
 }
 
 // -------------------- EXPORT QUOTES TO JSON FILE --------------------
@@ -114,10 +114,7 @@ async function syncWithServer() {
   try {
     const response = await fetch("https://jsonplaceholder.typicode.com/posts");
     const serverQuotes = await response.json();
-
     if (serverQuotes && Array.isArray(serverQuotes)) {
-      // Simple conflict resolution: server wins
-      localStorage.setItem("quotes", JSON.stringify(quotes));
       console.log("✅ Synced with server successfully.");
     }
   } catch (error) {
@@ -128,7 +125,7 @@ async function syncWithServer() {
 // -------------------- INITIALIZATION --------------------
 document.addEventListener("DOMContentLoaded", () => {
   populateCategories();
-  displayRandomQuote();
-  newQuoteBtn.addEventListener("click", displayRandomQuote);
-  setInterval(syncWithServer, 10000); // simulate server sync every 10s
+  showRandomQuote();
+  newQuoteBtn.addEventListener("click", showRandomQuote);
+  setInterval(syncWithServer, 10000); // simulate sync every 10s
 });
