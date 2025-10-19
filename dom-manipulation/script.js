@@ -162,3 +162,27 @@ document.addEventListener("DOMContentLoaded", () => {
   newQuoteBtn.addEventListener("click", showRandomQuote);
   setInterval(syncWithServer, 10000);
 });
+
+// -------------------- FETCH QUOTES FROM SERVER --------------------
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const data = await response.json();
+
+    const serverQuotes = data.slice(0, 5).map(item => ({
+      text: item.title,
+      category: "Server"
+    }));
+
+    console.log("Fetched Quotes from Server:", serverQuotes);
+
+    quotes = [...quotes, ...serverQuotes];
+    saveQuotes();
+    populateCategories();
+    showRandomQuote();
+
+  } catch (error) {
+    console.error("Error fetching quotes from server:", error);
+  }
+}
+
