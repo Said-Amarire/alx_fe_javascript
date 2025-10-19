@@ -186,3 +186,24 @@ async function fetchQuotesFromServer() {
   }
 }
 
+// -------------------- SYNC LOCAL QUOTES TO SERVER --------------------
+async function postQuotesToServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quotes)
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log("✅ Quotes successfully posted to server:", result);
+    } else {
+      console.error("❌ Failed to post quotes to server:", response.status);
+    }
+  } catch (error) {
+    console.error("⚠️ Error posting quotes to server:", error);
+  }
+}
