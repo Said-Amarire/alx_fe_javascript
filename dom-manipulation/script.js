@@ -84,3 +84,19 @@ function importFromJsonFile(event) {
 
 populateCategories();
 showRandomQuote();
+
+
+
+async function syncWithServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const serverData = await response.json();
+    console.log("Server data fetched:", serverData.slice(0, 3));
+  } catch (error) {
+    console.error("Error syncing with server:", error);
+  }
+}
+
+// Simulate sync every 30 seconds
+setInterval(syncWithServer, 30000);
+
