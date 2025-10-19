@@ -207,3 +207,46 @@ async function postQuotesToServer() {
     console.error("⚠️ Error posting quotes to server:", error);
   }
 }
+
+// -------------------- SYNC QUOTES FUNCTION --------------------
+async function syncQuotes() {
+  console.log("🔁 Syncing quotes with server...");
+
+  try {
+    // Fetch quotes from server (simulation)
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const serverQuotes = await response.json();
+
+    // Merge server data with local data (simulation)
+    quotes.push({
+      text: serverQuotes[0]?.title || "Server synced quote",
+      category: "Server"
+    });
+
+    // Save merged data to localStorage
+    localStorage.setItem("quotes", JSON.stringify(quotes));
+
+    console.log("✅ Quotes synced successfully with server!");
+  } catch (error) {
+    console.error("⚠️ Error syncing quotes:", error);
+  }
+
+  // Now also post local quotes to server
+  try {
+    const postResponse = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quotes)
+    });
+
+    if (postResponse.ok) {
+      console.log("✅ Quotes successfully posted to server!");
+    } else {
+      console.error("❌ Failed to post quotes to server:", postResponse.status);
+    }
+  } catch (postError) {
+    console.error("⚠️ Error posting quotes to server:", postError);
+  }
+}
